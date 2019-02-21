@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.UsuarioSistema" table="usuario_sistema" schema="seguridad">
+        <id name="idUsuarioSistema" type="int">
+            <column name="id_usuario_sistema" />
+            <generator class="sequence" >
+                <param name="sequence">seguridad.seq_usuario_sistema</param>
+            </generator>
+        </id>
+        <many-to-one name="usuario" class="com.csti.ce.seguridad.domain.Usuario" fetch="join">
+            <column name="id_usuario" />
+        </many-to-one>
+        <many-to-one name="sistema" class="com.csti.ce.seguridad.domain.Sistema" fetch="join">
+            <column name="id_sistema" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="com.csti.ce.monitor.domain.Parametro" schema="facele" table="parametro">
+    <id name="idParametro" type="int">
+      <column name="id_parametro"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="programa" type="string">
+      <column length="100" name="programa"/>
+    </property>
+    <property name="campo" type="string">
+      <column length="100" name="campo"/>
+    </property>
+    <property name="posicion" type="java.lang.Integer">
+      <column name="posicion"/>
+    </property>
+    <property name="opcion" type="string">
+      <column length="2" name="opcion"/>
+    </property>
+    <property name="parametroLow" type="string">
+      <column length="500" name="parametro_low"/>
+    </property>
+    <property name="parametroHigh" type="string">
+      <column length="500" name="parametro_high"/>
+    </property>
+  </class>
+</hibernate-mapping>

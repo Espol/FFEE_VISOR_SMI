@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Modulo" table="modulo" schema="seguridad" >
+        <id name="idModulo" type="int">
+            <column name="id_modulo" />
+            <generator class="sequence">
+                <param name="sequence">seguridad.seq_modulo</param>
+            </generator>
+        </id>
+        <property name="codigo" type="string">
+            <column name="codigo" length="50" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="icono" type="string">
+            <column name="icono" length="200" />
+        </property>
+        <property name="activo" type="java.lang.Character">
+            <column name="activo" length="1" />
+        </property>
+        <property name="orden" type="java.lang.Integer">
+            <column name="orden" />
+        </property>
+        <many-to-one name="sistema" class="com.csti.ce.seguridad.domain.Sistema" fetch="join">
+            <column name="id_sistema" not-null="true" />
+        </many-to-one>
+        <!--<set name="opcions" table="opcion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_modulo" not-null="true" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.Opcion" />
+        </set>-->
+    </class>
+</hibernate-mapping>

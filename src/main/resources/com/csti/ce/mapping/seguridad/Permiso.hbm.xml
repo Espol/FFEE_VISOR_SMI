@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Permiso" table="permiso" schema="seguridad">
+        <id name="idPermiso" type="int">
+            <column name="id_permiso" />
+            <generator class="sequence" >
+                <param name="sequence">seguridad.seq_permiso</param>
+            </generator>
+        </id>
+        <property name="codigo" type="string">
+            <column name="codigo" length="100" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="activo" type="java.lang.Character">
+            <column name="activo" length="1" />
+        </property>
+        <property name="actualizar" type="char">
+            <column name="actualizar" length="1" not-null="true" />
+        </property>
+        <property name="eliminar" type="char">
+            <column name="eliminar" length="1" not-null="true" />
+        </property>
+        <property name="agregar" type="char">
+            <column name="agregar" length="1" not-null="true" />
+        </property>
+        <property name="lectura" type="char">
+            <column name="lectura" length="1" not-null="true" />
+        </property>
+        <!--<set name="accesos" table="acceso" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_permiso" not-null="true" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.Acceso" />
+        </set>-->
+    </class>
+</hibernate-mapping>

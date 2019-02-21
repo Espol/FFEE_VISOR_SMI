@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="com.csti.ce.integrador.domain.EnvioDocumento" schema="public" table="envio_documento">
+      <id name="idEnvio" type="int">
+          <column name="id_envio"/>
+          <generator class="sequence">
+              <param name="sequence">sq_fe_envio_documento</param>
+          </generator>
+      </id>
+      <property name="idPeriodo" type="int">
+          <column name="id_periodo"/>
+      </property>
+      <property name="idSociedad" type="int">
+          <column name="id_sociedad"/>
+      </property>
+      <property name="secuencia" type="int">
+          <column name="secuencia"/>
+      </property>
+      <property name="destino" type="string">
+          <column name="destino"/>
+      </property>
+      <property name="estado" type="string">
+          <column name="estado"/>
+      </property>
+  </class>
+</hibernate-mapping>

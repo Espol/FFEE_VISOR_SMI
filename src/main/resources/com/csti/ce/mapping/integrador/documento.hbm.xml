@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.integrador.domain.Documento" schema="public" table="documento"  >
+        <id name="secuencia" type="int">
+            <column name="secuencia" />
+            <generator class="sequence" >
+                <param name="sequence">sq_fe_documento</param>
+            </generator>
+        </id>
+        <property name="idPeriodo" type="int">
+            <column name="id_periodo" />
+        </property>
+        <property name="idSociedad" type="int">
+            <column name="id_sociedad" />
+        </property>
+        <property name="tipoDocumento" type="string">
+            <column length="2" name="tipo_documento" />
+        </property>
+        <property name="establecimiento" type="string">
+            <column name="establecimiento" length="3" />
+        </property>
+        <property name="puntoEmision" type="string">
+            <column name="punto_emision" />
+        </property>
+        <property name="numero" type="string">
+            <column name="numero" />
+        </property>
+        <property name="serieCorrelativo" type="string">
+            <column name="serie_correlativo" />
+        </property>
+        <property name="estadoNotifRechazado" type="int">
+            <column name="est_notif_rech" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.UsuarioSerie" table="usuario_serie" schema="seguridad">
+        <id name="idUsuarioSerie" type="int">
+            <column name="id_usuario_serie"/> 
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="serie" class="com.csti.ce.seguridad.domain.Serie" fetch="select">
+            <column name="id_serie" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuario" class="com.csti.ce.seguridad.domain.Usuario" fetch="select">
+            <column name="id_usuario" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

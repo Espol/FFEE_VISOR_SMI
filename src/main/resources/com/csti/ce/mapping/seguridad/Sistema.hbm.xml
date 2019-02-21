@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Sistema" table="sistema" schema="seguridad">
+        <id name="idSistema" type="int">
+            <column name="id_sistema" />
+            <generator class="sequence" >
+                <param name="sequence">seguridad.seq_sistema</param>
+            </generator>
+        </id>
+        <property name="identificador" type="string">
+            <column name="identificador" length="100" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="100" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="licencia" type="string">
+            <column name="licencia" length="100" />
+        </property>
+        <property name="ambiente" type="string">
+            <column name="ambiente" length="1" />
+        </property>
+        <!--<set name="usuarioSistemas" table="usuario_sistema" inverse="true" lazy="true" fetch="join">
+            <key>
+                <column name="id_sistema" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.UsuarioSistema" />
+        </set>-->
+    </class>
+</hibernate-mapping>

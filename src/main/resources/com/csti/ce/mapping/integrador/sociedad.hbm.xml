@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.integrador.domain.Sociedad" schema="public" table="sociedad"  >
+        <id name="idSociedad" type="int">
+            <column name="id_sociedad" />
+            <generator class="sequence" >
+                <param name="sequence">sq_fe_sociedad</param>
+            </generator>
+        </id>
+        <property name="ruc" type="string">
+            <column length="13" name="ruc" />
+        </property>
+        <property name="razonSocial" type="string">
+            <column name="razon_social" />
+        </property>
+        <property name="pathRoot" type="string">
+            <column name="path_root" />
+        </property>
+        <property name="pathCertificado" type="string">
+            <column name="path_certificado" />
+        </property>
+        <property name="claveCertificado" type="string">
+            <column name="clave_certificado" />
+        </property>
+        <property name="confSap" type="string">
+            <column name="conf_sap" />
+        </property>
+        <property name="confMail" type="string">
+            <column name="conf_mail" />
+        </property>
+        <property name="mailNotificacion" type="string">
+            <column name="mail_notificacion" />
+        </property>
+        <property name="offline" type="int">
+            <column name="esquema_proc" />
+        </property>
+        <property name="vencFirma" type="date">
+            <column  name="venc_firma"/>
+        </property>
+        
+        <property name="mailFactura" type="string">
+            <column  name="mail_factura"/>
+        </property>
+        <property name="mailCredito" type="string">
+            <column  name="mail_credito"/>
+        </property>
+        <property name="mailDebito" type="string">
+            <column  name="mail_debito"/>
+        </property>
+        <property name="mailGuia" type="string">
+            <column  name="mail_guia"/>
+        </property>
+        <property name="mailRetencion" type="string">
+            <column  name="mail_retencion"/>
+        </property>
+        
+        <property name="iniNotifFirma" type="int">
+            <column  name="ini_notif_firma"/>
+        </property>
+        <property name="intervalNotifFirma" type="int">
+            <column  name="interval_notif_firma"/>
+        </property>
+        <property name="procVencFirma" type="int">
+            <column  name="proc_venc_firma"/>
+        </property>
+        
+        
+        <property name="iniTimeAvailableCorrecion" type="int">
+            <column  name="ini_notif_rechazo"/>
+        </property>
+        
+        <property name="intervalNotifDocRechazado" type="int">
+            <column  name="intervalo_notificacion"/>
+        </property>
+        
+        <property name="url" type="string">
+            <column  name="url"/>
+        </property>
+        
+        <property name="portalImpl" type="int">
+            <column  name="port_impl"/>
+        </property>
+        
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.csti.ce.monitor.domain.Comprobante" schema="facele" table="comprobante">
+        <id name="idComprobante" type="long">
+            <column name="id_comprobante"/> 
+            <generator class="sequence"> 
+                <param name="sequence">facele.sep_comprobante</param>
+            </generator>
+        </id>
+        <property name="ruc" type="string">
+            <column length="13" name="ruc"/>
+        </property>
+        <property name="nroSri" type="string">
+            <column length="20" name="nro_sri"/>
+        </property>
+        <property name="docReferencia" type="string">
+            <column length="20" name="doc_referencia"/>
+        </property>
+        <property name="fechaEmision" type="date">
+            <column  name="fecha_emision"/>
+        </property>
+        <property name="tipoDoc" type="string">
+            <column length="2" name="tipo_doc"/>
+        </property>
+        <property name="tipoDocReferencia" type="string">
+            <column length="20" name="tipo_doc_referencia" />
+        </property>
+        <property name="tipoEmision" type="integer">
+            <column length="1" name="tipo_emision" />
+        </property>
+        <property name="claveAcceso" type="string">
+            <column length="100" name="clave_acceso"/>
+        </property>
+        <property name="nroAutorizacion" type="string">
+            <column length="100" name="nro_autorizacion"/>
+        </property>
+        <property name="fechaAutorizacion" type="string">
+            <column length="20" name="fecha_autorizacion"/>
+        </property>
+        <property name="contabilizado" type="integer">
+            <column length="1" name="contabilizado" />
+        </property>
+        <property name="anulado" type="integer">
+            <column length="1" name="anulado" />
+        </property>
+        <property name="xml" type="string">
+            <column name="xml"/>
+        </property>
+        <property name="documentXML" type="string">
+            <column name="document_xml"/>
+        </property>
+        <property name="nombreDocumento" type="string">
+            <column name="nombre_documento"/>
+        </property>
+        <property name="pathXml" type="string">
+            <column length="300" name="path_xml"/>
+        </property>
+        <property name="pathPdf" type="string">
+            <column length="300" name="path_pdf"/>
+        </property>
+        <property name="escenario" type="integer">
+            <column length="1" name="escenario" />
+        </property>
+        <property name="estado" type="string">
+            <column length="30" name="estado" />
+        </property>
+        <property name="log" type="string">
+            <column name="log"/>
+        </property>
+        <property name="pdf" type="integer">
+            <column length="1" name="pdf" />
+        </property>
+        <property name="email" type="integer">
+            <column length="1" name="email" />
+        </property>
+        <property name="notificacion" type="integer">
+            <column length="1" name="notificacion" />
+        </property>
+        <property name="ultimo" type="integer">
+            <column length="1" name="ultimo"/>
+        </property>
+        <property name="recepcionado" type="integer">
+            <column length="1" name="recepcionado"/>
+        </property>
+        <property name="autorizado" type="integer">
+            <column length="1" name="autorizado"/>
+        </property>
+        <property name="usuario" type="string">
+            <column length="20" name="usuario"/>
+        </property>
+        <property name="terminal" type="string">
+            <column length="20" name="terminal"/>
+        </property>
+        <property name="emailDestino" type="string">
+            <column length="120" name="email_destino"/>
+        </property>
+        <property name="fechaRegistro" type="timestamp">
+            <column   name="fecha_registro"/>
+        </property>
+        <property name="mensaje" type="string">
+            <column   name="mensaje"/>
+        </property>
+        
+        <property name="offline" column="esquema_proc" type="integer" />
+        
+        <property name="razonSocial" type="string">
+            <column   name="razon_social"/>
+        </property>
+        <property name="interlocutor" type="string">
+            <column   name="cod_interlocutor"/>
+        </property>
+        <property name="docSustento" type="string">
+            <column   name="doc_sustento"/>
+        </property>
+        <property name="rucCliente" type="string">
+            <column   name="ruc_cliente"/>
+        </property>
+    </class>
+</hibernate-mapping>

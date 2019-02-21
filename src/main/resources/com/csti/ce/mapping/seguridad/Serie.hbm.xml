@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Serie" table="serie" schema="seguridad">
+        <id name="idSerie" type="int">
+            <column name="id_serie" />
+            <generator class="increment" />
+        </id>
+        <property name="establecimiento" type="string">
+            <column name="establecimiento" length="3" />
+        </property>
+        <property name="puntoEmision" type="string">
+            <column name="punto_emision" length="3" />
+        </property> 
+        <property name="activo" type="int">
+            <column name="activo" length="1" />
+        </property> 
+        <set name="usuarioSeries" table="usuario_serie" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_serie" not-null="true" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.Serie" />
+        </set>        
+    </class>
+</hibernate-mapping>

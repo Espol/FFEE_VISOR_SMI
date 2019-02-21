@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Usuario" table="usuario" schema="seguridad">
+        <id name="idUsuario" type="int">
+            <column name="id_usuario" />
+            <generator class="sequence" >
+                <param name="sequence">seguridad.seq_usuario</param>
+            </generator>
+        </id>
+        <many-to-one name="persona" class="com.csti.ce.seguridad.domain.Persona" fetch="join">
+            <column name="id_persona" not-null="true" />
+        </many-to-one>
+        <property name="userName" type="string">
+            <column name="user_name" length="200" />
+        </property>
+        <property name="userPassword" type="string">
+            <column name="user_password" length="100" />
+        </property>
+        <property name="activo" type="char">
+            <column name="activo" length="1" not-null="true" />
+        </property>
+        
+        
+    	<property column="sociedad" name="sociedad" type="string" />
+        
+        <!--<set name="usuarioRols" table="usuario_rol" inverse="true" lazy="true" fetch="join">
+            <key>
+                <column name="id_usuario" not-null="true" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.UsuarioRol" />
+        </set>
+        <set name="usuarioSistemas" table="usuario_sistema" inverse="true" lazy="true" fetch="join">
+            <key>
+                <column name="id_usuario" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.UsuarioSistema" />
+        </set>
+        <set name="usuarioSeries" table="usuario_serie" inverse="true" lazy="true" fetch="join">
+            <key>
+                <column name="id_usuario" />
+            </key>
+            <one-to-many class="com.csti.ce.seguridad.domain.UsuarioSerie" />
+        </set>-->
+    </class>
+</hibernate-mapping>

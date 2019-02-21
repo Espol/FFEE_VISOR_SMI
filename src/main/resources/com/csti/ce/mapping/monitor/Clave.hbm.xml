@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.monitor.domain.Clave" schema="facele" table="clave">
+        <id name="idClave" type="long">
+            <column name="id_clave"/>
+            <generator class="sequence"> 
+                <param name="sequence">facele.sep_clave</param>
+            </generator>
+        </id>
+        <property name="ruc" type="string">
+            <column length="13" name="ruc"/>
+        </property>
+        <property name="ambiente" type="integer">
+            <column length="1" name="ambiente"/>
+        </property>
+        <property name="aleatorio" type="string">
+            <column length="37" name="aleatorio"/>
+        </property>
+        <property name="usado" type="integer">
+            <column length="1" name="usado"/>
+        </property>
+    </class>
+</hibernate-mapping>

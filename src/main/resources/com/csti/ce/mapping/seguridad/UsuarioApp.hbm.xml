@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="com.csti.ce.seguridad.domain.UsuarioApp" table="usuario" schema="seguridad">
+    <id name="idUsuarioApp" type="int">
+      <column name="id_usuario"/>
+      <!--  <generator class="native" /> -->
+      <generator class="increment"/>
+    </id>
+    <property column="user_name" name="userNameApp" type="string"/>
+    <property column="user_password" name="passwordApp" type="string"/> 
+    <property column="sociedad" name="sociedad" type="string" />
+  </class>
+</hibernate-mapping>

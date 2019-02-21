@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.csti.ce.seguridad.domain.Acceso" table="acceso" schema="seguridad">
+        <id name="idAcceso" type="int">
+            <column name="id_acceso" />
+            <generator class="sequence">
+                <param name="sequence">seguridad.seq_acceso</param>
+            </generator>
+        </id>
+        <many-to-one name="permiso" class="com.csti.ce.seguridad.domain.Permiso" fetch="join">
+            <column name="id_permiso" not-null="true" />
+        </many-to-one>
+        <many-to-one name="rol" class="com.csti.ce.seguridad.domain.Rol" fetch="join">
+            <column name="id_rol" not-null="true" />
+        </many-to-one>
+        <many-to-one name="opcion" class="com.csti.ce.seguridad.domain.Opcion" fetch="join">
+            <column name="id_opcion" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>
