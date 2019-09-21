@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.csti.ce.integrador.domain.Documento" schema="public" table="documento"  >
+  <class name="com.csti.ce.integrador.domain.DocumentoAnulado" schema="public" table="documento"  >
         <id name="secuencia" type="int">
             <column name="secuencia" />
             <generator class="sequence" >
@@ -32,20 +32,8 @@
         <property name="serieCorrelativo" type="string">
             <column name="serie_correlativo" />
         </property>
-        <property name="estadoNotifRechazado" type="integer"  >
-            <column name="est_notif_rech"  />
-        </property>
         <property name="pathXML" type="string">
             <column name="path_xml" />
-        </property>
-        <property name="claveAcceso" type="string">
-            <column name="clave_acceso" />
-        </property>
-        <property name="estadoSri" type="string">
-            <column name="estado_sri" />
-        </property>
-        <property name="ultimo" type="boolean">
-            <column name="ultimo" />
         </property>
     </class>
 </hibernate-mapping>

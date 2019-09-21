@@ -39,6 +39,7 @@ public class DocumentoDAOHibernate extends HibernateDaoSupport implements Docume
         criteria.add(Restrictions.eq("serieCorrelativo", nroSri));
         criteria.add(Restrictions.eq("tipoDocumento", tipoDoc));
         criteria.add(Restrictions.eq("idSociedad", s.getIdSociedad()));
+        criteria.add(Restrictions.eq("ultimo", true));
         return (Documento) criteria.list().get(0);
     }
 

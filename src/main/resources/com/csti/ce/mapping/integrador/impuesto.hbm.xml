@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.csti.ce.integrador.domain.Impuesto" >
+         <id name="codigoPorcentaje" column="cod_porcentaje"/>
+<!--        <composite-id>
+            <key-property name="codigo" column="codigo" />
+            <key-property name="codigoPorcentaje" column="cod_porcentaje" />
+        </composite-id>-->
+        <property name="codigo" type="int">
+            <column name="codigo" />
+        </property>
+<!--        <property name="codigoPorcentaje" type="int">
+            <column name="cod_porcentaje" />
+        </property>-->
+        <property name="porcentaje" type="int">
+            <column length="2" name="porcentaje" />
+        </property>
+    </class>
+</hibernate-mapping>

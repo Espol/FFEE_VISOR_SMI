@@ -6,15 +6,21 @@ public class Documento {
 	private int idPeriodo;
 	private int idSociedad;
 	private String tipoDocumento;
+        private int subTipoDoc;
 	private String establecimiento;
 	private String puntoEmision;
 	private String numero;
 	private String serieCorrelativo;
-	private int estadoNotifRechazado;
-	public int getSecuencia() {
+	private Integer estadoNotifRechazado;
+        private String pathXML;//XML SIN FIRMAR
+        private String claveAcceso;
+        private boolean ultimo;
+    private String estadoSri;
+        
+	public Integer getSecuencia() {
 		return secuencia;
 	}
-	public void setSecuencia(int secuencia) {
+	public void setSecuencia(Integer secuencia) {
 		this.secuencia = secuencia;
 	}
 	public int getIdPeriodo() {
@@ -59,11 +65,51 @@ public class Documento {
 	public void setSerieCorrelativo(String serieCorrelativo) {
 		this.serieCorrelativo = serieCorrelativo;
 	}
-	public int getEstadoNotifRechazado() {
+	public Integer getEstadoNotifRechazado() {
 		return estadoNotifRechazado;
 	}
-	public void setEstadoNotifRechazado(int estadoNotifRechazado) {
+	public void setEstadoNotifRechazado(Integer estadoNotifRechazado) {
 		this.estadoNotifRechazado = estadoNotifRechazado;
 	}
+
+    public String getPathXML() {
+        return pathXML;
+    }
+
+    public void setPathXML(String pathXML) {
+        this.pathXML = pathXML;
+    }
+
+    public int getSubTipoDoc() {
+        return subTipoDoc;
+    }
+
+    public void setSubTipoDoc(int subTipoDoc) {
+        this.subTipoDoc = subTipoDoc;
+    }
+
+    public String getClaveAcceso() {
+        return claveAcceso;
+    }
+
+    public void setClaveAcceso(String claveAcceso) {
+        this.claveAcceso = claveAcceso;
+    }
+
+    public String getEstadoSri() {
+        return estadoSri;
+    }
+
+    public void setEstadoSri(String estadoSri) {
+        this.estadoSri = estadoSri;
+    }
+
+    public boolean isUltimo() {
+        return ultimo;
+    }
+
+    public void setUltimo(boolean ultimo) {
+        this.ultimo = ultimo;
+    }
 
 }

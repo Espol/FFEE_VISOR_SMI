@@ -10,7 +10,7 @@ import com.csti.ce.constant.ComprobanteConstants;
 import com.csti.ce.constant.EscenarioConstant;
 import static com.csti.ce.constant.EscenarioConstant.*;
 import com.csti.ce.constant.ParametroConstants;
-import com.csti.ce.constant.SapConstant; 
+import com.csti.ce.constant.SapConstant;
 import com.csti.ce.constant.TipoEmisionConstants;
 import com.csti.ce.monitor.service.Emision;
 import com.csti.ce.exception.AutorizacionSRIException;
@@ -24,6 +24,12 @@ import com.csti.ce.exception.SinRespuestaSRIAutorizacionException;
 import com.csti.ce.exception.SinRespuestaSRIRecepcionException;
 import com.csti.ce.exception.ValidacionXSDException;
 import com.csti.ce.exception.domain.Mensaje;
+import com.csti.ce.integrador.dao.DocumentoAnuladoDAO;
+import com.csti.ce.integrador.dao.ImpuestoDAO;
+import com.csti.ce.integrador.dao.SociedadDAO;
+import com.csti.ce.integrador.domain.DocumentoAnulado;
+import com.csti.ce.integrador.domain.Impuesto;
+import com.csti.ce.integrador.domain.Sociedad;
 import com.csti.ce.monitor.dao.ComprobanteDAO;
 import com.csti.ce.monitor.dao.ParametroDAO;
 import com.csti.ce.monitor.domain.Comprobante;
@@ -39,9 +45,26 @@ import com.csti.ce.util.LogManager;
 import com.csti.ce.util.EmailUtil;
 import com.csti.ce.util.ReporteUtil;
 import com.csti.ce.util.UpdateSAP;
+import com.csti.ce.util.util;
+import com.sap.ws.qas.service.SapServiceImpl;
+//import com.smi.sap.ws.qas.service.SapServiceImpl;
+import ec.incloud.ce.bean.common.TotalImpuesto;
+import ec.incloud.ce.bean.credito.NotaCredito;
+import ec.incloud.ce.bean.debito.NotaDebito;
+import ec.incloud.ce.bean.factura.Factura;
+import ec.incloud.ce.bean.facturaExportacion.FacturaExportacion;
+import ec.incloud.ce.bean.facturaReembolso.FacturaReembolso;
+import ec.incloud.ce.pdf.services.PdfFactory;
+import ec.incloud.ce.pdf.services.PdfServices;
+import ec.incloud.ce.xml.exception.XmlException;
+import ec.incloud.ce.xml.services.XmlFactory;
+import ec.incloud.ce.xml.services.XmlServices;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,9 +91,20 @@ public class EmisionImpl implements Emision {
     Comprobante comprobanteUltimo;
     Comprobante comprobanteCurrent;
     Respuesta respuesta;
-    String Ruc;
+    String ruc;
     String ambiente;
     String usuario;
+
+    private Impuesto impuesto = null;
+
+    @Autowired
+    DocumentoAnuladoDAO documentoDAO;
+
+    @Autowired
+    SociedadDAO sociedadDAO;
+    
+    @Autowired
+    ImpuestoDAO impuestoDAO;
 
     @Override
     public void setUsuario(String usuario) {
@@ -108,7 +142,7 @@ public class EmisionImpl implements Emision {
 
     @Override
     public void setRuc(String ruc) {
-        this.Ruc = ruc;
+        this.ruc = ruc;
     }
 
     private String getRuc() {
@@ -116,29 +150,28 @@ public class EmisionImpl implements Emision {
     }
 
     // Inicio del flujo del comprobante con solucion al inconveniente por autorizar
- // Modificacion método iniciar: Ammiel
- //-----------------------------------------------------------------------------------
+    // Modificacion método iniciar: Ammiel
+    //-----------------------------------------------------------------------------------
     public void iniciar() throws Exception {
         comprobanteCurrent = new Comprobante();
         this.respuesta = new Respuesta();
-        sociedad = this.parametroDAO.getSociedad(this.Ruc);
-        comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, Ruc);
-        if(comprobanteUltimo!=null && comprobanteUltimo.getEstado().equals(POR_AUTORIZAR)){
-           int de= comprobanteDAO.getNroRegistros(identificador,tipoDoc,POR_AUTORIZAR);
-            if(de>=3 && comprobanteUltimo.getPathXml().contains("\\porAutorizar")){
-      //     comprobanteUltimo.setTipoEmision(TipoEmisionConstants.EN_CONTINGENCIA);
-             comprobanteUltimo.setRecepcionado(AplicacionConstants.FAIL);
-             String prueba=comprobanteUltimo.getPathXml();
-             String prueba1= prueba.replace("\\porAutorizar","");
-             comprobanteUltimo.setPathXml(prueba1);
-             comprobanteDAO.update(comprobanteUltimo);
-          }
-          else if(de>=3 && comprobanteUltimo.getPathXml().contains("\\contingencia")){
+        sociedad = this.parametroDAO.getSociedad(this.ruc);
+        comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, ruc);
+        if (comprobanteUltimo != null && comprobanteUltimo.getEstado().equals(POR_AUTORIZAR)) {
+            int de = comprobanteDAO.getNroRegistros(identificador, tipoDoc, POR_AUTORIZAR);
+            if (de >= 3 && comprobanteUltimo.getPathXml().contains("\\porAutorizar")) {
+                //     comprobanteUltimo.setTipoEmision(TipoEmisionConstants.EN_CONTINGENCIA);
+                comprobanteUltimo.setRecepcionado(AplicacionConstants.FAIL);
+                String prueba = comprobanteUltimo.getPathXml();
+                String prueba1 = prueba.replace("\\porAutorizar", "");
+                comprobanteUltimo.setPathXml(prueba1);
+                comprobanteDAO.update(comprobanteUltimo);
+            } else if (de >= 3 && comprobanteUltimo.getPathXml().contains("\\contingencia")) {
                 comprobanteUltimo.setRecepcionado(AplicacionConstants.FAIL);
                 comprobanteDAO.update(comprobanteUltimo);
             }
         }
-        if (comprobanteUltimo == null){
+        if (comprobanteUltimo == null) {
             throw new Exception("Este Documento no está apto para el Proceso.");
         }
         this.configuracionComprobante();
@@ -150,28 +183,246 @@ public class EmisionImpl implements Emision {
         }
         logManager.init(this.getPathLog());
     }
+
     //------------------------------------------------------------------------------------------------------
     //  Método para anular el comprobante
     //  By: Ammiel
     @Override
-    public String anularComprobante(){
+    public String anularComprobante() {
         log.info("[BD] Anulando comprobante.");
-        sociedad = this.parametroDAO.getSociedad(this.Ruc);
-        comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, Ruc);
-        if (comprobanteUltimo != null){
-            comprobanteUltimo.setAnulado(AplicacionConstants.SUCCESS);
-            comprobanteUltimo.setUltimo(AplicacionConstants.FAIL);
-            comprobanteUltimo.setEstado(AplicacionUtil.obtenerEstadoByEscenario(EscenarioConstant.AUTORIZADO_ANULADO));
-            comprobanteUltimo.setEscenario(EscenarioConstant.AUTORIZADO_ANULADO);
-            comprobanteDAO.update(comprobanteUltimo);
+        sociedad = this.parametroDAO.getSociedad(this.ruc);
+        
+        comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, ruc);
+        SapServiceImpl sap = new SapServiceImpl();
+        String fechaAndHora[] = comprobanteUltimo.getFechaAutorizacion().split(" ");
+        
+        Sociedad s = sociedadDAO.getSociedad(this.ruc);
+        s.getConfSap();
+        String user = util.getCadenaTextoEntre(s.getConfSap(), "<usuario>", "</usuario>");
+        String pass = util.getCadenaTextoEntre(s.getConfSap(), "<contrasena>", "</contrasena>");
+        
+        String sri[] = comprobanteUltimo.getNroSri().split("-");
+        String nroSri = sri[0]+"-"+sri[1]+"-"+sri[2].substring(1);
+        
+//        System.out.println("user: "+user);
+//        System.out.println("pass: "+pass);inicio01
+//        System.out.println("fecha: "+util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"));
+//        System.out.println("usuario: "+comprobanteUltimo.getUsuario());
+//        System.out.println("hora: "+fechaAndHora[1]);
+//        System.out.println("nroSri: "+nroSri);
+//        System.out.println("docsap: "+comprobanteUltimo.getDocReferencia());
+//        System.out.println("ruc: "+this.ruc);
+//        System.out.println("tipo: "+comprobanteUltimo.getTipoDoc());
+        Map<Object, String> map = sap.anularDocumentoSap(user, pass, util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"), comprobanteUltimo.getUsuario(), fechaAndHora[1], nroSri, comprobanteUltimo.getDocReferencia(), this.ruc, comprobanteUltimo.getTipoDoc());
+//        Map<Object, String> map = new HashMap<Object, String>();
+//        map.put("mensaje", "mensaje");
+//        map.put("valor", "0");
+        if(map.get("valor").equals("0")){
+            if (comprobanteUltimo != null) {
+                comprobanteUltimo.setAnulado(AplicacionConstants.SUCCESS);
+                comprobanteUltimo.setUltimo(AplicacionConstants.FAIL);
+                comprobanteUltimo.setEstado(AplicacionUtil.obtenerEstadoByEscenario(EscenarioConstant.AUTORIZADO_ANULADO));
+                comprobanteUltimo.setEscenario(EscenarioConstant.AUTORIZADO_ANULADO);
+                generacionPDFAnulado(s);
+
+                comprobanteDAO.update(comprobanteUltimo);
+            }
+            log.info("[DB] Anulación correcta");
+            return "Comprobante Anulado:" + identificador;
+        } else {
+            return map.get("mensaje");
         }
-        log.info("[DB] Anulación correcta");
-        return "Comprobante Anulado:" + identificador;
-   }
-     //----------------------------------------------------------------------------------------------------
+    }
+
+    private void generacionPDFAnulado(Sociedad s ) {
+        DocumentoAnulado doc = documentoDAO.getDocumento(this.ruc, comprobanteUltimo.getNroSri(), tipoDoc);
+        
+        
+        comprobanteUltimo.setPathPdf(FilenameUtils.removeExtension(doc.getPathXML()) + ".pdf");
+
+        XmlServices xmlServices = this.getXmlServices(doc);
+        PdfServices pdfServices = this.getPdfServices(doc);
+
+        if (xmlServices != null && pdfServices != null) {
+            
+            this.getImpuestoIvaByDocumento(doc, xmlServices);//{+ MML
+
+            String[] sociedad = new String[5];
+            sociedad[0] = ruc;
+            sociedad[1] = s.getUrl();
+            sociedad[2] = s.getTextoRide();
+            sociedad[3] = "";
+            sociedad[4] = "";
+
+            String[] documentoParam = {""};
+            try {
+                pdfServices.generarPdfAnulado(xmlServices.getComprobanteDePathArchivo(doc.getPathXML()),
+                        FilenameUtils.removeExtension(doc.getPathXML()) + ".pdf",
+                        comprobanteUltimo.getNroAutorizacion(),
+                        comprobanteUltimo.getFechaAutorizacion(),
+                        sociedad,
+                        documentoParam,
+                        this.getIvaDinamico()
+                );
+                
+                
+            } catch (XmlException ex) {
+                log.error("Error al generar PDF", ex);
+            }
+        }
+    }
+
+    private String getIvaDinamico() {
+        if (impuesto != null) {
+            return "" + impuesto.getPorcentaje();
+        }
+        return "";
+    }
+
+    private void getImpuestoIvaByDocumento(DocumentoAnulado documento, XmlServices xmlServices) {
+
+        Object comprobante;
+
+        String codigo = "";
+        String codPorcentaje = "";
+
+        try {
+            comprobante = xmlServices.getComprobanteDePathArchivo(documento.getPathXML());
+            switch (documento.getTipoDocumento()) {
+                case "01":
+                    if (documento.getSubTipoDoc() != 2 && documento.getSubTipoDoc() != 3) {
+                        Factura factura = (Factura) comprobante;
+                        for (TotalImpuesto imp : factura.getInfoFactura().getTotalConImpuestos()) {
+                            if (imp.getCodigo().equalsIgnoreCase("2")) {
+                                codigo = imp.getCodigo();
+                                codPorcentaje = imp.getCodigoPorcentaje();
+                            }
+                        }
+
+                        getImpuesto(codigo, codPorcentaje);
+                    } else if (documento.getSubTipoDoc() == 2) {
+                        FacturaExportacion exportacion = (FacturaExportacion) comprobante;
+
+                        for (TotalImpuesto imp : exportacion.getInfoFactura().getTotalConImpuestos()) {
+                            if (imp.getCodigo().equalsIgnoreCase("2")) {
+                                codigo = imp.getCodigo();
+                                codPorcentaje = imp.getCodigoPorcentaje();
+                            }
+                        }
+
+                        getImpuesto(codigo, codPorcentaje);
+                    } else if (documento.getSubTipoDoc() == 3) {
+                        FacturaReembolso reembolso = (FacturaReembolso) comprobante;
+
+                        for (TotalImpuesto imp : reembolso.getInfoFactura().getTotalConImpuestos()) {
+                            if (imp.getCodigo().equalsIgnoreCase("2")) {
+                                codigo = imp.getCodigo();
+                                codPorcentaje = imp.getCodigoPorcentaje();
+                            }
+                        }
+
+                        getImpuesto(codigo, codPorcentaje);
+                    }
+                    break;
+                case "04":
+                    NotaCredito credito = (NotaCredito) comprobante;
+                    for (TotalImpuesto imp : credito.getInfoNotaCredito().getTotalConImpuestos()) {
+                        if (imp.getCodigo().equalsIgnoreCase("2")) {
+                            codigo = imp.getCodigo();
+                            codPorcentaje = imp.getCodigoPorcentaje();
+                        }
+                    }
+                    getImpuesto(codigo, codPorcentaje);
+                    break;
+                case "05":
+                    NotaDebito debito = (NotaDebito) comprobante;
+                    for (ec.incloud.ce.bean.common.Impuesto imp : debito.getInfoNotaDebito().getImpuestos()) {
+                        if (imp.getCodigo().equalsIgnoreCase("2")) {
+                            codigo = imp.getCodigo();
+                            codPorcentaje = imp.getCodigoPorcentaje();
+                        }
+                    }
+                    getImpuesto(codigo, codPorcentaje);
+                    break;
+                default:
+                    break;
+            }
+        } catch (XmlException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void getImpuesto(String codigo, String codPorcentaje) {
+        impuesto = impuestoDAO.getImpuesto(Integer.parseInt(codigo), Integer.parseInt(codPorcentaje));
+    }
+
+    private XmlServices getXmlServices(DocumentoAnulado documento) {
+        XmlServices xmlServices = null;
+
+        switch (documento.getTipoDocumento()) {
+            case "01":
+                if (documento.getSubTipoDoc() != 2 && documento.getSubTipoDoc() != 3) {
+                    xmlServices = XmlFactory.getFacturaXmlServices();
+                } else if (documento.getSubTipoDoc() == 2) {
+                    xmlServices = XmlFactory.getFacturaExportacionXmlServices();
+                } else if (documento.getSubTipoDoc() == 3) {
+                    xmlServices = XmlFactory.getFacturaReembolsoXmlServices();
+                }
+                break;
+            case "04":
+                xmlServices = XmlFactory.getNotaCreditoXmlServices();
+                break;
+            case "05":
+                xmlServices = XmlFactory.getNotaDebitoXmlServices();
+                break;
+            case "06":
+                xmlServices = XmlFactory.getGuiaRemisionXmlServices();
+                break;
+            case "07":
+                xmlServices = XmlFactory.getRetencionServices();
+                break;
+            default:
+                break;
+        }
+        return xmlServices;
+    }
+
+    private PdfServices getPdfServices(DocumentoAnulado documento) {
+        PdfServices pdfServices = null;
+
+        switch (documento.getTipoDocumento()) {
+            case "01":
+                if (documento.getSubTipoDoc() != 2 && documento.getSubTipoDoc() != 3) {
+                    pdfServices = PdfFactory.createFacturaPdfService();
+                } else if (documento.getSubTipoDoc() == 2) {
+                    pdfServices = PdfFactory.creatFacturaExportacionPdfService();
+                } else if (documento.getSubTipoDoc() == 3) {
+                    pdfServices = PdfFactory.createPdfFacturaReembolsoServices();
+                }
+                break;
+            case "04":
+                pdfServices = PdfFactory.createPdfNotaCreditoServices();
+                break;
+            case "05":
+                pdfServices = PdfFactory.createPdfNotaDebitoServices();
+                break;
+            case "06":
+                pdfServices = PdfFactory.createPdfGuiaRemisionServices();
+                break;
+            case "07":
+                pdfServices = PdfFactory.createPdfComprobanteRetencionServices();
+                break;
+            default:
+                break;
+        }
+        return pdfServices;
+    }
+
+    //----------------------------------------------------------------------------------------------------
     private void validarComprobante() throws Exception {
-        if (this.Ruc == null && this.Ruc.isEmpty()) {
-            throw new Exception("Ruc no Válido");
+        if (this.ruc == null && this.ruc.isEmpty()) {
+            throw new Exception("ruc no Válido");
         }
         if (this.getDocumento().getContabilizado() != AplicacionConstants.SUCCESS) {
             throw new Exception("Este documento no esta Contabilizado.");
@@ -415,13 +666,8 @@ public class EmisionImpl implements Emision {
     /**
      * Se procede al envio del comprobante al SRI.
      *
-     * @throws RecepcionSRIException Excepción por XML rechazado en recepción.
-     * Este tipo de excepción incluye una lista de mensajes de errores que
-     * indican el motivo de su rechazo.
-     * @throws SinRespuestaSRIRecepcionException Se produce esta excepción
-     * cuando no hay comunicación con el SRI. El estado del comprobante actual
-     * es CONTINGENCIA, lo cual indica que NO se emitirá un comprobante en
-     * contingencia por esta excepción.
+     * @throws RecepcionSRIException Excepción por XML rechazado en recepción. Este tipo de excepción incluye una lista de mensajes de errores que indican el motivo de su rechazo.
+     * @throws SinRespuestaSRIRecepcionException Se produce esta excepción cuando no hay comunicación con el SRI. El estado del comprobante actual es CONTINGENCIA, lo cual indica que NO se emitirá un comprobante en contingencia por esta excepción.
      */
     private void enviarSRI() throws RecepcionSRIException,
             SinRespuestaSRIRecepcionException,
@@ -441,8 +687,8 @@ public class EmisionImpl implements Emision {
             this.setRecepcion(AplicacionConstants.SUCCESS);
         } catch (RecepcionSRIException ex) {
             log.info("Documento Rechazado - nro Autorización");
-             for(Mensaje mensaje: ex.getListMensajes()){
-                if(mensaje.getIdentificador().equals("43")){
+            for (Mensaje mensaje : ex.getListMensajes()) {
+                if (mensaje.getIdentificador().equals("43")) {
                     this.setRecepcion(AplicacionConstants.SUCCESS);
                     return;
                 }
@@ -461,14 +707,10 @@ public class EmisionImpl implements Emision {
     }
 
     /**
-     * Se procede a la autorización del comprobante al SRI mediante la clave de
-     * acceso.
+     * Se procede a la autorización del comprobante al SRI mediante la clave de acceso.
      *
-     * @throws AutorizacionSRIException Se produce esta excepcion cuando el
-     * comprobante fue rechazado por el SRI. Este tipo de excepción incluye una
-     * lista de mensajes de errores que indican el motivo de su rechazo.
-     * @throws SinRespuestaSRIAutorizacionException Excepción al no tener
-     * conexión con el SRI en la autorización del comprobante.
+     * @throws AutorizacionSRIException Se produce esta excepcion cuando el comprobante fue rechazado por el SRI. Este tipo de excepción incluye una lista de mensajes de errores que indican el motivo de su rechazo.
+     * @throws SinRespuestaSRIAutorizacionException Excepción al no tener conexión con el SRI en la autorización del comprobante.
      */
     protected void autorizarSRI() throws AutorizacionSRIException,
             SinRespuestaSRIAutorizacionException,
@@ -754,9 +996,7 @@ public class EmisionImpl implements Emision {
     }
 
     /**
-     * Genera el nombre del documento Ingresado, el nombre esta compuesto por: -
-     * Nombre del tipo de documento - Tipo de documento de referencia -
-     * Documento de referencia - Número de SRI - Fecha y hora
+     * Genera el nombre del documento Ingresado, el nombre esta compuesto por: - Nombre del tipo de documento - Tipo de documento de referencia - Documento de referencia - Número de SRI - Fecha y hora
      *
      * @return
      */

@@ -180,5 +180,27 @@ public abstract class util {
             return fechaDate;
         }
     }
+    
+    public static String ChangeFormatDate(String fecha, String formatInit, String formatFin) {
+        SimpleDateFormat sdFormatInit = new SimpleDateFormat(formatInit);
+        SimpleDateFormat sdFormatFin = new SimpleDateFormat(formatFin);
+        String strFecha = fecha;
+        Date fechaDate = null;
+        try {
+            fechaDate = sdFormatInit.parse(strFecha);
+            return sdFormatFin.format(fechaDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+            return sdFormatFin.format(new Date());
+        }
+    }
+
+    
+    public static String getCadenaTextoEntre(String origen, String inicio, String fin) {
+        int posInit = origen.indexOf(inicio);
+        int posFin = origen.indexOf(fin);
+        String subCadena = origen.substring(posInit + inicio.length(), posFin);
+        return subCadena;
+    }
 
 }

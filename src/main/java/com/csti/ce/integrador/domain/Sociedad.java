@@ -32,17 +32,16 @@ public class Sociedad {
     private String mailCredito;
     private String mailDebito;
     private String mailGuia;
-    
 
     private int intervalNotifFirma;
     private int iniNotifFirma;
     private int procVencFirma;
     
-
     private int iniTimeAvailableCorrecion;
     private int intervalNotifDocRechazado;
     
     private String url;
+    private String textoRide;
     
     private int portalImpl;
 
@@ -229,5 +228,13 @@ public class Sociedad {
 	public void setPortalImpl(int portalImpl) {
 		this.portalImpl = portalImpl;
 	}
+
+    public String getTextoRide() {
+        return textoRide;
+    }
+
+    public void setTextoRide(String textoRide) {
+        this.textoRide = textoRide;
+    }
     
 }

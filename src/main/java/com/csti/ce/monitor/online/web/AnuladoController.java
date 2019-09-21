@@ -69,21 +69,16 @@ public class AnuladoController extends GenericController {
     @RequestMapping(value = "/anulado/autorizar/comprobante")
     public @ResponseBody
     String anularAutorizado(@RequestParam("identificador") String identificador,
-            @RequestParam("tipoDocumento") String tipoDoc,
-            HttpServletRequest request,
-            HttpServletResponse response){
-//        UsuarioApp usuarioValidado = (UsuarioApp) request.getSession().getAttribute(Constants.USER_SESSION);
-//        String user = usuarioValidado.getUsuario().getUserName();
-//        if (user.equalsIgnoreCase("ECVENTAS")){
-            emision.setIdentificador(identificador);
-            emision.setUsuario(this.getUsuarioSesion().getUserName());
-            emision.setTipoDoc(tipoDoc);
-            emision.setAmbiente(this.getAmbiente());
-            emision.setRuc(this.getSociedadRUC());
-            return emision.anularComprobante();
-//        }else {
-//            return "Usted no tiene permiso de Anular Documentos.";
-//        }
+        @RequestParam("tipoDocumento") String tipoDoc,
+        HttpServletRequest request,
+        HttpServletResponse response){
+        
+        emision.setIdentificador(identificador);
+        emision.setUsuario(this.getUsuarioSesion().getUserName());
+        emision.setTipoDoc(tipoDoc);
+        emision.setAmbiente(this.getAmbiente());
+        emision.setRuc(this.getSociedadRUC());
+        return emision.anularComprobante();
     }
 
     @RequestMapping(value = "/anulado/comprobante/mail")

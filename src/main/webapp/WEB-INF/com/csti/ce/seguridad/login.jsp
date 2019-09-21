@@ -80,6 +80,7 @@
 <!--                              -->
                                 <select id="sociedad"  name="sociedad" style="width:200px;" class="easyui-combobox" data-options="required:true"> 
                                     <option value="0992865768001">SMI</option>
+                                    <option value="1790809358001">SINEA</option>
                                 </select>
                             </td>
                         </tr>

@@ -62,8 +62,11 @@ public class EnvioDocumentoDAOHibernate extends HibernateDaoSupport implements E
         } else {
             cri.add(Restrictions.eq("destino", "SR"));
         }
-        
-        return (EnvioDocumento) cri.list().get(0);
+        List<EnvioDocumento> list = cri.list();
+        if(list != null && !list.isEmpty()){
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override

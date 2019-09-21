@@ -729,8 +729,8 @@
                     //url: $.fn.base + "/view/contingencia/autorizar/comprobante",
                     type: "POST",
                     data: {
-                        identificador: object.nroSri,
-                        tipoDocumento: object.tipoDoc
+                        nroSri: object.nroSri,
+                        tipoDoc: object.tipoDoc
                     },
                     beforeSend: function(xhr) {
                         var div = $("#d45v78" + object.id + ' .panel-body');
@@ -774,7 +774,7 @@
             sendComprobantes: function() {
 
 //                for (var i = 0; i < $.fn.autorizar.data.length; i++) {
-                if ($.fn.autorizar.data.length == 0 && $.fn.autorizar.count == 0) {
+                if ($.fn.autorizar.data.length === 0 && $.fn.autorizar.count === 0) {
                     $.messager.alert('Información', "No hay documentos seleccionados para autorizar", 'info', function() {
                     });
                 }else{
@@ -785,6 +785,7 @@
                     $.fn.autorizar.count++;
                 } else {
                     $.fn.autorizar.data = [];
+                    $.fn.loading.close();
                     $.fn.autorizar.count = 0;
                     $.fn.autorizar.clearGrid();
                 }
