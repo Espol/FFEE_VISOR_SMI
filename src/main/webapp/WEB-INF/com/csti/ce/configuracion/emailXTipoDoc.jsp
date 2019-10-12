@@ -55,6 +55,13 @@
                                 	<input id="mailRetencion" name="mailRetencion" size="70px" class="easyui-validatebox textbox input-large" type="text"></input>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><strong>E-mail Liquidación de Compra:</strong></td>
+                                <td><input id="id-url" name="id-hostCorreo" type="hidden"></input></td>
+                                <td>
+                                	<input id="mailLiquidacionCompra" name="mailLiquidacionCompra" size="70px" class="easyui-validatebox textbox input-large" type="text"></input>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </fieldset>
@@ -103,9 +110,7 @@
                         $('#mailDebito').val(response.data.mailDebito);
                         $('#mailGuia').val(response.data.mailGuia);
                         $('#mailRetencion').val(response.data.mailRetencion);
-                        
-                        debugger;
-                        
+                        $('#mailLiquidacionCompra').val(response.data.mailLiquidacionCompra);                        
                         $('#iniTimeAvailableCorrecion').val(response.data.iniTimeAvailableCorrecion + 1);
                         $('#intervalNotifDocRechazado').val(response.data.intervalNotifDocRechazado);
                         
@@ -125,26 +130,15 @@
             function submitEmail() {
                 $.fn.loading.open("Actualizando", "Actualizando Parametros");
                 
-                /*$("#ff-emailNotificacion").form('submit', {
-                    url: '${pageContext.request.contextPath}/view/config/emailxtipodoc/edit',
-                    dataType: 'json',
-                    success: function(data) {
-                        var obj = JSON.stringify(data);
-                        $.fn.loading.close();
-                        $.messager.alert('Actualización', obj['message'], 'info');
-
-//                         $('#iniTimeAvailableCorrecion').val( $('#iniTimeAvailableCorrecion').val() + 1 );
-                    }
-                });*/
-                
                 
                 var objeto = {  mailFactura: $('#mailFactura').val(), 
-                				mailCredito : $('#mailCredito').val(), 
-                			  	mailDebito: $('#mailDebito').val(), 
-                			  	mailGuia: $('#mailGuia').val(), 
-                			  	mailRetencion: $('#mailRetencion').val(),
-                			  	iniTimeAvailableCorrecion: $('#iniTimeAvailableCorrecion').val(), 
-                			  	intervalNotifDocRechazado: $('#intervalNotifDocRechazado').val()};
+                                mailCredito : $('#mailCredito').val(), 
+                		mailDebito: $('#mailDebito').val(), 
+                		mailGuia: $('#mailGuia').val(), 
+                		mailRetencion: $('#mailRetencion').val(),
+                		mailLiquidacionCompra: $('#mailLiquidacionCompra').val(),
+                		iniTimeAvailableCorrecion: $('#iniTimeAvailableCorrecion').val(), 
+                		intervalNotifDocRechazado: $('#intervalNotifDocRechazado').val()};
                 
                 
                 $.ajax({type: 'POST',

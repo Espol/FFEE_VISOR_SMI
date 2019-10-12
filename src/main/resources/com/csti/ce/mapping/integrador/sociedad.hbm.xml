@@ -82,5 +82,9 @@
             <column  name="port_impl"/>
         </property>
         
+        <property name="mailLiquidacionCompra" type="string">
+            <column  name="mail_liquidacionCompra"/>
+        </property>
+        
     </class>
 </hibernate-mapping>

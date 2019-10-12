@@ -49,6 +49,7 @@
                    <b>Busquedas por:</b>
                    <select class="easyui-combobox fe-combobox-middle" data-options="valueField:'id'" id="tipoDocAnulado" name="tipoDocAnulado">
                             <option value="01">Factura</option>
+                            <option value="03">Liquidación de Compra</option>
                             <option value="04">Nota Crédito</option>
                             <option value="05">Nota Débito</option>
                             <option value="06">Guia Remisión</option>

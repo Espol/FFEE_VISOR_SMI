@@ -67,7 +67,7 @@ public class EmailXTipoDocController extends GenericController {
             @RequestParam("mailDebito") String mailDebito, 
             @RequestParam("mailGuia") String mailGuia,
             @RequestParam("mailRetencion") String mailRetencion,
-            
+            @RequestParam("mailLiquidacionCompra") String mailLiquidacionCompra,
             @RequestParam("iniTimeAvailableCorrecion") int iniTimeAvailableCorrecion,
             @RequestParam("intervalNotifDocRechazado") int intervalNotifDocRechazado
    ){
@@ -83,7 +83,8 @@ public class EmailXTipoDocController extends GenericController {
         	sociedad.setMailDebito(mailDebito);
         	sociedad.setMailGuia(mailGuia);
         	sociedad.setMailRetencion(mailRetencion);
-        	
+        	sociedad.setMailLiquidacionCompra(mailLiquidacionCompra);
+                
         	sociedad.setIniTimeAvailableCorrecion(iniTimeAvailableCorrecion-1);//se resta 1, porque se añade 59 minutos en el thread
         	sociedad.setIntervalNotifDocRechazado(intervalNotifDocRechazado);
         	
