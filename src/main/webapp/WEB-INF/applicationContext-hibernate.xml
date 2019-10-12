@@ -14,17 +14,17 @@
         <property name="driverClassName" value="org.postgresql.Driver"/>
         
         <!-- PRD -->
-        <property name="url" value="jdbc:postgresql://localhost:5432/comp_electr_v2"/>
+<!--        <property name="url" value="jdbc:postgresql://localhost:5432/comp_electr_v2"/>
         <property name="username" value="comp_electr"/>
-        <property name="password" value="c0mpr0b4nt3s3l3c"/>
+        <property name="password" value="c0mpr0b4nt3s3l3c"/>-->
         
         <!-- QAS -->
-<!--         <property name="url" value="jdbc:postgresql://localhost:5432/smi_ce_qas"/>
+         <property name="url" value="jdbc:postgresql://localhost:5432/smi_ce_qas"/>
          <property name="username" value="postgres"/> 
-         <property name="password" value="2q3w2q3w"/>-->
+         <property name="password" value="2q3w2q3w"/>
 
         <!-- DES -->
-<!--         <property name="url" value="jdbc:postgresql://localhost:5432/qas_smi_local"/>
+<!--         <property name="url" value="jdbc:postgresql://localhost:5432/dev_smi"/>
          <property name="username" value="postgres"/>
          <property name="password" value="2q3w2q3w"/>-->
         

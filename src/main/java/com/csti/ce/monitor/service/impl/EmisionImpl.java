@@ -190,7 +190,7 @@ public class EmisionImpl implements Emision {
     @Override
     public String anularComprobante() {
         log.info("[BD] Anulando comprobante.");
-        sociedad = this.parametroDAO.getSociedad(this.ruc);
+//        sociedad = this.parametroDAO.getSociedad(this.ruc);
         
         comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, ruc);
         SapServiceImpl sap = new SapServiceImpl();
@@ -204,15 +204,6 @@ public class EmisionImpl implements Emision {
         String sri[] = comprobanteUltimo.getNroSri().split("-");
         String nroSri = sri[0]+"-"+sri[1]+"-"+sri[2].substring(1);
         
-//        System.out.println("user: "+user);
-//        System.out.println("pass: "+pass);inicio01
-//        System.out.println("fecha: "+util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"));
-//        System.out.println("usuario: "+comprobanteUltimo.getUsuario());
-//        System.out.println("hora: "+fechaAndHora[1]);
-//        System.out.println("nroSri: "+nroSri);
-//        System.out.println("docsap: "+comprobanteUltimo.getDocReferencia());
-//        System.out.println("ruc: "+this.ruc);
-//        System.out.println("tipo: "+comprobanteUltimo.getTipoDoc());
         Map<Object, String> map = sap.anularDocumentoSap(user, pass, util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"), comprobanteUltimo.getUsuario(), fechaAndHora[1], nroSri, comprobanteUltimo.getDocReferencia(), this.ruc, comprobanteUltimo.getTipoDoc());
 //        Map<Object, String> map = new HashMap<Object, String>();
 //        map.put("mensaje", "mensaje");
@@ -615,7 +606,6 @@ public class EmisionImpl implements Emision {
         EmailUtil email = new EmailUtil();
         email.setAmbiente(ambiente);
         email.setComprobante(comprobanteCurrent);
-        email.setParametroSociedad(sociedad);
         email.setParametroDAO(parametroDAO);
         email.setMensaje(this.getMensaje());
         email.envioEmailAutorizado(null);
@@ -648,7 +638,6 @@ public class EmisionImpl implements Emision {
         EmailUtil email = new EmailUtil();
         email.setAmbiente(ambiente);
         email.setComprobante(comprobanteCurrent);
-        email.setParametroSociedad(sociedad);
         email.setParametroDAO(parametroDAO);
         email.setMensaje(this.getMensaje());
         email.envioEmailNotificacion();

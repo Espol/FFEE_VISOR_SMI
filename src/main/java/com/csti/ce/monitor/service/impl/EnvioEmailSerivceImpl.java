@@ -92,7 +92,6 @@ public class EnvioEmailSerivceImpl implements EnvioEmailService {
             email.setComprobante(comprobante);
             email.setMensaje(this.mensaje);
             email.setParametroDAO(this.parametroDAO);
-            email.setParametroSociedad(this.getParametroSociedad());
             email.envioEmailAutorizado( sociedad );
             comprobante.setEmail(AplicacionConstants.SUCCESS);
             this.response.setSuccess(true);

@@ -77,7 +77,6 @@ public class GeneracionReporteServiceImpl implements GeneracionReporteService {
                 EmailUtil email = new EmailUtil();
                 email.setAmbiente(ambiente);
                 email.setComprobante(this.comprobante);
-                email.setParametroSociedad(this.getSociedad());
                 email.setParametroDAO(parametroDAO);
                 email.setMensaje(this.comprobante.getMensaje());
                 email.envioEmailAutorizado(null);
