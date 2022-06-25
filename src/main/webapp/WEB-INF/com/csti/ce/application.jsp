@@ -61,10 +61,10 @@
                     }
                 </script>                 
             </div>
-            <div data-options="region:'south',split:true" style="height: 50px;" >
+<!--            <div data-options="region:'south',split:true" style="height: 50px;" >
                 <div style="text-align: center">&COPY; Derechos Reservados 2014 - <a target="_blank" href="http://csticorp.biz/">Chain Services TI - CSTI CORP</a></div>
                 <div style="text-align: center">Est&aacute; prohibida la reproducci&oacute;n parcial y total, sin autorizaci&oacute;n escrita de su titular, de todos los contenidos de Facturaci&oacute;n Electr&oacute;nica.</div>
-            </div>
+            </div>-->
             <!--<div data-options="region:'east',split:true" title="East" style="width:100px;">east</div>-->
             <div data-options="region:'west',split:true" title="Menú" style="width:250px;">
             	<div >	           		
