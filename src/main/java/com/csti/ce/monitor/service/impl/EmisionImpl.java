@@ -46,8 +46,8 @@ import com.csti.ce.util.EmailUtil;
 import com.csti.ce.util.ReporteUtil;
 import com.csti.ce.util.UpdateSAP;
 import com.csti.ce.util.util;
+import com.ws.sap.prd.service.SapImpl;
 //import com.sap.ws.qas.service.SapServiceImpl;
-import com.smi.sap.ws.qas.service.SapServiceImpl;
 import ec.incloud.ce.bean.common.TotalImpuesto;
 import ec.incloud.ce.bean.credito.NotaCredito;
 import ec.incloud.ce.bean.debito.NotaDebito;
@@ -61,7 +61,6 @@ import ec.incloud.ce.xml.services.XmlFactory;
 import ec.incloud.ce.xml.services.XmlServices;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
@@ -102,7 +101,7 @@ public class EmisionImpl implements Emision {
 
     @Autowired
     SociedadDAO sociedadDAO;
-    
+
     @Autowired
     ImpuestoDAO impuestoDAO;
 
@@ -191,60 +190,61 @@ public class EmisionImpl implements Emision {
     public String anularComprobante() {
         log.info("[BD] Anulando comprobante.");
         sociedad = this.parametroDAO.getSociedad(this.ruc);
-        
+
         comprobanteUltimo = comprobanteDAO.getByUltimo(identificador, tipoDoc, ruc);
-        SapServiceImpl sap = new SapServiceImpl();
-        String fechaAndHora[] = comprobanteUltimo.getFechaAutorizacion().split(" ");
-        
+        SapImpl sap = new SapImpl();
+
+        Date date = new Date();
+        String fecha = util.changeFormatDate(date, "yyyy-MM-dd");
+        String hora = util.changeFormatDate(date, "HHmmss");
+
         Sociedad s = sociedadDAO.getSociedad(this.ruc);
         s.getConfSap();
         String user = util.getCadenaTextoEntre(s.getConfSap(), "<usuario>", "</usuario>");
         String pass = util.getCadenaTextoEntre(s.getConfSap(), "<contrasena>", "</contrasena>");
-        
-        String sri[] = comprobanteUltimo.getNroSri().split("-");
-        String nroSri = sri[0]+"-"+sri[1]+"-"+sri[2].substring(1);
-        
-//        System.out.println("user: "+user);
-//        System.out.println("pass: "+pass);inicio01
-//        System.out.println("fecha: "+util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"));
-//        System.out.println("usuario: "+comprobanteUltimo.getUsuario());
-//        System.out.println("hora: "+fechaAndHora[1]);
-//        System.out.println("nroSri: "+nroSri);
-//        System.out.println("docsap: "+comprobanteUltimo.getDocReferencia());
-//        System.out.println("ruc: "+this.ruc);
-//        System.out.println("tipo: "+comprobanteUltimo.getTipoDoc());
-        Map<Object, String> map = sap.anularDocumentoSap(user, pass, util.ChangeFormatDate(fechaAndHora[0], "dd/MM/yyyy","yyyy-MM-dd"), comprobanteUltimo.getUsuario(), fechaAndHora[1], nroSri, comprobanteUltimo.getDocReferencia(), this.ruc, comprobanteUltimo.getTipoDoc());
-//        Map<Object, String> map = new HashMap<Object, String>();
-//        map.put("mensaje", "mensaje");
-//        map.put("valor", "0");
-        if(map.get("valor").equals("0")){
-            if (comprobanteUltimo != null) {
-                comprobanteUltimo.setAnulado(AplicacionConstants.SUCCESS);
-                comprobanteUltimo.setUltimo(AplicacionConstants.FAIL);
-                comprobanteUltimo.setEstado(AplicacionUtil.obtenerEstadoByEscenario(EscenarioConstant.AUTORIZADO_ANULADO));
-                comprobanteUltimo.setEscenario(EscenarioConstant.AUTORIZADO_ANULADO);
-                generacionPDFAnulado(s);
 
-                comprobanteDAO.update(comprobanteUltimo);
+        String sri[] = comprobanteUltimo.getNroSri().split("-");
+        String nroSri = sri[0] + "-" + sri[1] + "-" + sri[2].substring(1);
+        Map<Object, String> map = sap.anularDocumentoSap(user, pass, fecha, comprobanteUltimo.getUsuario(), hora, nroSri, comprobanteUltimo.getDocReferencia(), this.ruc, comprobanteUltimo.getTipoDoc());
+
+        if (map != null) {
+            if (map.containsKey("valor") && map.containsKey("mensaje")) {
+                if (map.get("valor").equals("0")) {
+                    if (comprobanteUltimo != null) {
+                        comprobanteUltimo.setAnulado(AplicacionConstants.SUCCESS);
+                        comprobanteUltimo.setUltimo(AplicacionConstants.FAIL);
+                        comprobanteUltimo.setEstado(AplicacionUtil.obtenerEstadoByEscenario(EscenarioConstant.AUTORIZADO_ANULADO));
+                        comprobanteUltimo.setEscenario(EscenarioConstant.AUTORIZADO_ANULADO);
+                        generacionPDFAnulado(s);
+
+                        comprobanteDAO.update(comprobanteUltimo);
+                    }
+                    log.info("[DB] Anulación correcta");
+                    return "Comprobante Anulado:" + identificador;
+                } else {
+                    System.err.println("RESPUESTA DE SAP: " + map.get("mensaje"));
+                    return map.get("mensaje");
+                }
+            } else {
+                System.err.println("Error al obtener respuestas");
+                return "Error al obtener respuestas";
             }
-            log.info("[DB] Anulación correcta");
-            return "Comprobante Anulado:" + identificador;
         } else {
-            return map.get("mensaje");
+            System.err.println("Error de conexion de servicio web.");
+            return "Error de conexion de servicio web.";
         }
     }
 
-    private void generacionPDFAnulado(Sociedad s ) {
+    private void generacionPDFAnulado(Sociedad s) {
         DocumentoAnulado doc = documentoDAO.getDocumento(this.ruc, comprobanteUltimo.getNroSri(), tipoDoc);
-        
-        
+
         comprobanteUltimo.setPathPdf(FilenameUtils.removeExtension(doc.getPathXML()) + ".pdf");
 
         XmlServices xmlServices = this.getXmlServices(doc);
         PdfServices pdfServices = this.getPdfServices(doc);
 
         if (xmlServices != null && pdfServices != null) {
-            
+
             this.getImpuestoIvaByDocumento(doc, xmlServices);//{+ MML
 
             String[] sociedad = new String[5];
@@ -264,8 +264,7 @@ public class EmisionImpl implements Emision {
                         documentoParam,
                         this.getIvaDinamico()
                 );
-                
-                
+
             } catch (XmlException ex) {
                 log.error("Error al generar PDF", ex);
             }
@@ -666,8 +665,13 @@ public class EmisionImpl implements Emision {
     /**
      * Se procede al envio del comprobante al SRI.
      *
-     * @throws RecepcionSRIException Excepción por XML rechazado en recepción. Este tipo de excepción incluye una lista de mensajes de errores que indican el motivo de su rechazo.
-     * @throws SinRespuestaSRIRecepcionException Se produce esta excepción cuando no hay comunicación con el SRI. El estado del comprobante actual es CONTINGENCIA, lo cual indica que NO se emitirá un comprobante en contingencia por esta excepción.
+     * @throws RecepcionSRIException Excepción por XML rechazado en recepción.
+     * Este tipo de excepción incluye una lista de mensajes de errores que
+     * indican el motivo de su rechazo.
+     * @throws SinRespuestaSRIRecepcionException Se produce esta excepción
+     * cuando no hay comunicación con el SRI. El estado del comprobante actual
+     * es CONTINGENCIA, lo cual indica que NO se emitirá un comprobante en
+     * contingencia por esta excepción.
      */
     private void enviarSRI() throws RecepcionSRIException,
             SinRespuestaSRIRecepcionException,
@@ -707,10 +711,14 @@ public class EmisionImpl implements Emision {
     }
 
     /**
-     * Se procede a la autorización del comprobante al SRI mediante la clave de acceso.
+     * Se procede a la autorización del comprobante al SRI mediante la clave de
+     * acceso.
      *
-     * @throws AutorizacionSRIException Se produce esta excepcion cuando el comprobante fue rechazado por el SRI. Este tipo de excepción incluye una lista de mensajes de errores que indican el motivo de su rechazo.
-     * @throws SinRespuestaSRIAutorizacionException Excepción al no tener conexión con el SRI en la autorización del comprobante.
+     * @throws AutorizacionSRIException Se produce esta excepcion cuando el
+     * comprobante fue rechazado por el SRI. Este tipo de excepción incluye una
+     * lista de mensajes de errores que indican el motivo de su rechazo.
+     * @throws SinRespuestaSRIAutorizacionException Excepción al no tener
+     * conexión con el SRI en la autorización del comprobante.
      */
     protected void autorizarSRI() throws AutorizacionSRIException,
             SinRespuestaSRIAutorizacionException,
@@ -996,7 +1004,9 @@ public class EmisionImpl implements Emision {
     }
 
     /**
-     * Genera el nombre del documento Ingresado, el nombre esta compuesto por: - Nombre del tipo de documento - Tipo de documento de referencia - Documento de referencia - Número de SRI - Fecha y hora
+     * Genera el nombre del documento Ingresado, el nombre esta compuesto por: -
+     * Nombre del tipo de documento - Tipo de documento de referencia -
+     * Documento de referencia - Número de SRI - Fecha y hora
      *
      * @return
      */

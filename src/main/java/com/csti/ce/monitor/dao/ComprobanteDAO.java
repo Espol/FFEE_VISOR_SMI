@@ -6,6 +6,7 @@
 package com.csti.ce.monitor.dao;
 
 import com.csti.ce.monitor.domain.Comprobante;
+import com.csti.ce.monitor.domain.ComprobanteExcel;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -57,4 +58,16 @@ public interface ComprobanteDAO {
             String codInterlocutor);
     
     public Comprobante getComprobateRechazadoClaveAccesoRechazado(String ruc, String nroSri, String tipoDoc);
+    
+    public List<Comprobante> getByReporteByExcel(String ruc,
+            String tipoDoc,
+            String nroSri,
+            String docReferencia,
+            Timestamp fechaDesde,
+            Timestamp fechaHasta,
+            String interlocutor,
+            List<Integer> escenarios,
+            int ultimo,
+            int anulado,
+            int offline);
 }

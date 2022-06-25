@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -154,5 +153,18 @@ public abstract class GenericController extends AbstractView{
             resultado = true;
         }
         return resultado;
-    } 
+    }
+    
+    protected void viewXLS(String filename,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        InputStream inputStream = new FileInputStream(filename);
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "inline; filename=" + filename.toLowerCase());
+        response.setHeader("Cache-Control", "max-age=30");
+        response.setHeader("Pragma", "No-cache");
+        response.setDateHeader("Expires", 0);
+        IOUtils.copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+    }
 }

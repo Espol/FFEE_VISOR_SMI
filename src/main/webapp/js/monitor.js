@@ -99,6 +99,23 @@
                 });
             }
         },
+        EXCEL: {
+            setData: function(data) {
+                $.fn.EXCEL.path = data.replace(/\\/g, '/');
+            },
+            getData: function() {
+                return $.fn.EXCEL.path;
+            },
+            show: function() {
+                var dialog = $('<div id="xml-' + $.fn.EXCEL.path + '" data-options="iconCls:\'icon-save\',modal:true"></div>');
+                dialog.addClass('easyui-dialog');
+                dialog.attr("title", "Vizualización de EXCEL");
+                dialog.attr("style", "width:875px;height:500px;padding:0px");
+                dialog.append('<iframe src="' + $.fn.base + '/view/autorizado/comprobante/excel?path=' + $.fn.EXCEL.path + ' " frameborder="0" marginheight="0" scrolling ="auto" width="860" height="460"></iframe>');
+                dialog.dialog();
+            },
+            path: ''
+        },
         XML: {
             format: function(val, row, id) {
                 $.fn.PDF.addData(id, row);

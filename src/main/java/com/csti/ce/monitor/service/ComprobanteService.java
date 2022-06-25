@@ -133,4 +133,13 @@ public interface ComprobanteService {
     
     public Response autorizarRechazadoClaveAccesoRegistrado(String ruc, String nroSri, String tipoDoc);
     
+    public List<ComprobanteView> getComprobanteByExcel(String ruc,
+            String tipoDoc,
+            String nroSri,
+            String docReferencia,
+            String fechaDesde,
+            String fechaHasta,
+            String codInterlocutor,
+            int offline);
+    
 }

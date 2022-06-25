@@ -72,7 +72,7 @@ public class AnuladoController extends GenericController {
         @RequestParam("tipoDocumento") String tipoDoc,
         HttpServletRequest request,
         HttpServletResponse response){
-        
+        System.err.println("Verificacion de acceso");
         emision.setIdentificador(identificador);
         emision.setUsuario(this.getUsuarioSesion().getUserName());
         emision.setTipoDoc(tipoDoc);
