@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.csti.ce.constant.AplicacionConstants;
+import com.csti.ce.constant.ComprobanteConstants;
 import com.csti.ce.constant.EscenarioConstant;
 import com.csti.ce.integrador.dao.DocumentoDAO;
 import com.csti.ce.integrador.dao.EnvioDocumentoDAO;
@@ -392,7 +393,58 @@ public class ComprobanteServiceImpl implements ComprobanteService {
                 }
             }
         }
-
         return true;
+    }
+    
+    @Override
+    public List<ComprobanteView> getComprobanteByExcel(String ruc,
+            String tipoDoc,
+            String nroSri,
+            String docReferencia,
+            String fechaInit,
+            String fechaFin,
+            String codInterlocutor,
+            int offline){
+        int ultimo = AplicacionConstants.SUCCESS;
+        int anulado = AplicacionConstants.FAIL;
+        
+        Timestamp fechaDesde = AplicacionUtil.getDefaultDate(fechaInit + " " + AplicacionConstants.MIN_HOUR_MIN_SEG, AplicacionConstants.DATETIME_FORMAT);
+        Timestamp fechaHasta = AplicacionUtil.getDefaultDate(fechaFin + " " + AplicacionConstants.MAX_HOUR_MIN_SEG, AplicacionConstants.DATETIME_FORMAT);
+        List<Integer> inIds = AplicacionUtil.obtenerEscenarioByEstado(EscenarioConstant.AUTORIZADO);
+        
+        return this.getViewExcel(comprobanteDAO.getByReporteByExcel(ruc, tipoDoc, nroSri, docReferencia, fechaDesde, fechaHasta, codInterlocutor, inIds, ultimo, anulado,offline));
+        
+    }
+    
+    private List<ComprobanteView> getViewExcel(List<Comprobante> list) {
+        List<ComprobanteView> comprobanteViews = new ArrayList<>();
+        for (Comprobante comprobante : list) {
+            ComprobanteView item = new ComprobanteView();
+            item.setId(comprobante.getIdComprobante());
+            item.setRuc(comprobante.getRuc());
+            item.setNroSri(comprobante.getNroSri());
+            if (comprobante.getTipoDoc().equalsIgnoreCase(ComprobanteConstants.COD_RETENCION)) {
+                item.setDocReferencia(comprobante.getDocSustento());
+            } else {
+                item.setDocReferencia(comprobante.getDocReferencia());
+            }
+            item.setFechaEmision(AplicacionUtil.transformerDate(comprobante.getFechaEmision(), AplicacionConstants.DATETIME_FORMAT));
+            item.setTipoDoc(comprobante.getTipoDoc());
+            item.setTipoDocReferencia(comprobante.getTipoDocReferencia());
+            item.setTipoEmision(AplicacionUtil.evaluarTipoEmision(comprobante.getTipoEmision()));
+            item.setNroAutorizacion(comprobante.getNroAutorizacion());
+            item.setFechaAutorizacion(comprobante.getFechaAutorizacion());
+            item.setUsuario(comprobante.getUsuario());
+            item.setRazonSocial(comprobante.getRazonSocial());
+            item.setInterlocutor(comprobante.getInterlocutor());
+            item.setDocSustendo(comprobante.getDocSustento());
+            item.setEstado(comprobante.getEstado());
+            item.setClaveAcceso(comprobante.getClaveAcceso());
+            item.setRucCliente(comprobante.getRucCliente());
+            
+            item.setEmailDestino(comprobante.getEmailDestino());
+            comprobanteViews.add(item);
+        }
+        return comprobanteViews;
     }
 }

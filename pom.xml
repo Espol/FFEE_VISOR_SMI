@@ -24,6 +24,7 @@
         
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
     
     <dependencies>
@@ -195,13 +196,13 @@
             <version>${jackson.version}</version>
         </dependency>-->
         <dependency>
-            <groupId>com.smi.ws.sap.qas</groupId>
-            <artifactId>ConexionSAP-QAS</artifactId>
+            <groupId>com.smi.ws.sap.prd</groupId>
+            <artifactId>ConexionSAP-PRD</artifactId>
             <version>1.0</version>
         </dependency>
 <!--        <dependency>
-            <groupId>com.smi.ws.sap.prd</groupId>
-            <artifactId>ConexionSAP-PRD</artifactId>
+            <groupId>com.smi.ws.sap.qas</groupId>
+            <artifactId>SapWs_qas</artifactId>
             <version>1.0</version>
         </dependency>-->
     </dependencies>

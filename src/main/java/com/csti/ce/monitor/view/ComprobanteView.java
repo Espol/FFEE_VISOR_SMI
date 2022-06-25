@@ -12,6 +12,7 @@ package com.csti.ce.monitor.view;
 public class ComprobanteView {
 
     private long id;
+    private String ruc;
     private String nroSri;
     private String docReferencia;
     private String fechaEmision;
@@ -19,6 +20,7 @@ public class ComprobanteView {
     private String tipoDoc;
     private String tipoDocReferencia;
     private String tipoEmision;
+    private String claveAcceso;
     private String nroAutorizacion;
     private String fechaAutorizacion;
     private int contabilizado;
@@ -29,8 +31,14 @@ public class ComprobanteView {
     private int notificacion;
     private int pdf;
     private String estado;
-    private String interlocutor;
     private String razonSocial;
+    private String interlocutor;
+    private String docSustendo;
+    private String motivo;
+    private String emailDestino;
+    private String montoTotal;
+    private String rucCliente;
+    private String nroPila;
 
     public ComprobanteView() {
     }
@@ -325,6 +333,70 @@ public class ComprobanteView {
 
     public void setRazonSocial(String razonSocial) {
         this.razonSocial = razonSocial;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
+    }
+
+    public String getClaveAcceso() {
+        return claveAcceso;
+    }
+
+    public void setClaveAcceso(String claveAcceso) {
+        this.claveAcceso = claveAcceso;
+    }
+
+    public String getDocSustendo() {
+        return docSustendo;
+    }
+
+    public void setDocSustendo(String docSustendo) {
+        this.docSustendo = docSustendo;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getEmailDestino() {
+        return emailDestino;
+    }
+
+    public void setEmailDestino(String emailDestino) {
+        this.emailDestino = emailDestino;
+    }
+
+    public String getMontoTotal() {
+        return montoTotal;
+    }
+
+    public void setMontoTotal(String montoTotal) {
+        this.montoTotal = montoTotal;
+    }
+
+    public String getRucCliente() {
+        return rucCliente;
+    }
+
+    public void setRucCliente(String rucCliente) {
+        this.rucCliente = rucCliente;
+    }
+
+    public String getNroPila() {
+        return nroPila;
+    }
+
+    public void setNroPila(String nroPila) {
+        this.nroPila = nroPila;
     }
 
 }

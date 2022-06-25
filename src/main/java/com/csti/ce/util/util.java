@@ -181,18 +181,9 @@ public abstract class util {
         }
     }
     
-    public static String ChangeFormatDate(String fecha, String formatInit, String formatFin) {
-        SimpleDateFormat sdFormatInit = new SimpleDateFormat(formatInit);
+    public static String changeFormatDate(Date fecha, String formatFin) {
         SimpleDateFormat sdFormatFin = new SimpleDateFormat(formatFin);
-        String strFecha = fecha;
-        Date fechaDate = null;
-        try {
-            fechaDate = sdFormatInit.parse(strFecha);
-            return sdFormatFin.format(fechaDate);
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-            return sdFormatFin.format(new Date());
-        }
+        return sdFormatFin.format(fecha);
     }
 
     

@@ -24,6 +24,8 @@ import org.springframework.stereotype.Repository;
 import com.csti.ce.constant.AplicacionConstants;
 import com.csti.ce.monitor.dao.ComprobanteDAO;
 import com.csti.ce.monitor.domain.Comprobante;
+import com.csti.ce.monitor.domain.ComprobanteExcel;
+import com.csti.ce.util.AplicacionUtil;
 
 /**
  *
@@ -103,12 +105,6 @@ public class ComprobanteDAOHibernate extends HibernateDaoSupport implements Comp
         criteria.add(Restrictions.eq("tipoDoc", tipoDoc));
         criteria.add(Restrictions.in("escenario", escenarios));
         
-//        criteria.add(Restrictions.like("nroSri", nroSri, MatchMode.START));
-//        criteria.add(Restrictions.like("docReferencia", docReferencia, MatchMode.START));
-//        criteria.add(Restrictions.like("interlocutor", codInterlocutor, MatchMode.START));        
-//        criteria.add(Restrictions.ge("fechaRegistro", fechaDesde));
-//        criteria.add(Restrictions.le("fechaRegistro", fechaHasta));
-        
         
         if( nroSri != null && !nroSri.isEmpty() ){
             criteria.addOrder(Order.desc("nroSri"));
@@ -166,14 +162,7 @@ public class ComprobanteDAOHibernate extends HibernateDaoSupport implements Comp
         
         criteria.add(Restrictions.eq("ruc", ruc));
         criteria.add(Restrictions.eq("tipoDoc", tipoDoc));
-        criteria.add(Restrictions.in("escenario", escenarios));
-        
-//        criteria.add(Restrictions.like("nroSri", nroSri, MatchMode.START));
-//        criteria.add(Restrictions.like("docReferencia", docReferencia, MatchMode.START));
-//        criteria.add(Restrictions.like("interlocutor", codInterlocutor, MatchMode.START));
-//        criteria.add(Restrictions.ge("fechaRegistro", fechaDesde));
-//        criteria.add(Restrictions.le("fechaRegistro", fechaHasta));
-        
+        criteria.add(Restrictions.in("escenario", escenarios));        
         
         if( nroSri != null && !nroSri.isEmpty() )
         	criteria.add(Restrictions.like("nroSri", nroSri, MatchMode.START));
@@ -226,4 +215,60 @@ public class ComprobanteDAOHibernate extends HibernateDaoSupport implements Comp
         }
 
     }
+    
+    @Override
+    public List<Comprobante > getByReporteByExcel(String ruc,
+            String tipoDoc,
+            String nroSri,
+            String docReferencia,
+            Timestamp fechaDesde,
+            Timestamp fechaHasta,
+            String codInterlocutor,
+            List<Integer> escenarios,
+            int ultimo,
+            int anulado,
+            int offline) {
+        Criteria criteria = getSession().createCriteria(Comprobante.class);
+        criteria.add(Restrictions.eq("ruc", ruc));
+        criteria.add(Restrictions.eq("tipoDoc", tipoDoc));
+        criteria.add(Restrictions.in("escenario", escenarios));
+        
+        
+        if( nroSri != null && !nroSri.isEmpty() ){
+            criteria.addOrder(Order.desc("nroSri"));
+            criteria.add(Restrictions.like("nroSri", nroSri, MatchMode.START));        	
+        }
+        
+        if( docReferencia != null && !docReferencia.isEmpty() )
+        	criteria.add(Restrictions.like("docReferencia", docReferencia, MatchMode.START));
+
+        if( codInterlocutor != null && !codInterlocutor.isEmpty() )
+        	criteria.add(Restrictions.like("interlocutor", codInterlocutor, MatchMode.START));
+        
+        if( fechaDesde != null && fechaHasta != null )
+	        criteria.add(
+	        	Restrictions.and(
+	        		Restrictions.ge("fechaRegistro",fechaDesde)
+	        		,Restrictions.le("fechaRegistro", fechaHasta) 
+	        	)
+	        );
+        
+        
+        if(ultimo==1){
+            criteria.add(Restrictions.eq("ultimo", ultimo));
+        }
+        
+        if (anulado == 1) {
+            criteria.add(Restrictions.eq("anulado", anulado));
+        }
+        criteria.add(Restrictions.eq("offline", offline));//esquema = offline
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        
+        
+        criteria.addOrder(Order.desc("nroSri"));
+        
+        return criteria.list();
+    }
+    
+    
 }

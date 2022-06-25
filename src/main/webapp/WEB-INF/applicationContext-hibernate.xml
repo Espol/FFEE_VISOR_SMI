@@ -19,14 +19,14 @@
         <property name="password" value="c0mpr0b4nt3s3l3c"/>-->
         
         <!-- QAS -->
-         <property name="url" value="jdbc:postgresql://localhost:5432/smi_ce_qas"/>
+<!--         <property name="url" value="jdbc:postgresql://localhost:5432/smi_ce_qas"/>
          <property name="username" value="postgres"/> 
-         <property name="password" value="2q3w2q3w"/>
+         <property name="password" value="2q3w2q3w"/>-->
 
         <!-- DES -->
-<!--         <property name="url" value="jdbc:postgresql://localhost:5432/dev_smi"/>
+         <property name="url" value="jdbc:postgresql://localhost:5432/qas_smi_local"/>
          <property name="username" value="postgres"/>
-         <property name="password" value="2q3w2q3w"/>-->
+         <property name="password" value="2q3w2q3w"/>
         
     </bean>
     <!-- crea la factoria de sessiones para manejar las transacciones con la db -->
