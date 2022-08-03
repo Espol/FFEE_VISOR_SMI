@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
         <title>Documentos Autorizados</title>
     </head>
     <body>
@@ -25,7 +26,7 @@
             <thead data-options="frozen:true">
                 <tr>
                     <th rowspan="2" data-options="field:'ck',checkbox:true"></th>
-					<th rowspan="2" data-options="field:'fechaRegistro',width:100,align:'center'"><strong>Fe. Documento</strong></th>
+                    <th rowspan="2" data-options="field:'fechaRegistro',width:100,align:'center'"><strong>Fe. Documento</strong></th>
                     <th rowspan="2" data-options="field:'nroSri',width:130,align:'center'" ><strong>Nro. SRI</strong></th>
                     <th rowspan="2" data-options="field:'docReferencia',width:140,align:'center'"  ><strong>Doc. Referencia</strong></th>
                     <!--<th rowspan="2" data-options="field:'tipoEmision',width:100,align:'center'"><strong>Tipo Emisi&oacute;n</strong></th>-->
@@ -69,6 +70,7 @@
             <input class="easyui-validatebox textbox" type="text" size="20" id="codInterlocutor"/>
             <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search' " onclick="buscarAutorizadosOff()">Buscar</a>
             <a href="#" id="anula-off" class="easyui-linkbutton" data-options="iconCls:'icon-cancel' " onclick="anularComprobantesOff()">Anular</a>
+            <a href="#" id="btnReporte" class="easyui-linkbutton" data-options="iconCls:'icon-excel'" onclick="generarReporte()">Reporte</a>
         </div>
         <div id="dlg-autorizados-anular-off" class="easyui-dialog" title="Anulacion de comprobantes" style="width:610px;height:300px;padding:10px"
              data-options="
@@ -93,74 +95,110 @@
         <div id="dlg-buttons">
             <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$.fn.anular_offline.closeDialog('#dlg-autorizados-anular-off')">Cerrar</a>
         </div>
-               
-        <script type="text/javascript"> 
-                var f_1 = $.fn.date.newDateFirstDay();
-                var f_td = $.fn.date.newDate();
-                var dgAutorizar = $("#dg-autorizado-off");
-                dgAutorizar.datagrid({
-                    queryParams: {
-                        tipoDoc: $("#tipoDocAutorizado").val(),
-                        fechaIni: f_1,
-                        fechaFinal: f_td,
-                        nroSri: $("#searchAutorizado-off #nroSri").val(),
-                        nroReferencia: $("#searchAutorizado-off #nroReferencia").val(),
-                        codInterlocutor: $("#searchAutorizado-off #codInterlocutor").val()
-                    }
-                }); 
-                $('#searchAutorizado-off #fechaInicial').val(f_1);
-                $('#searchAutorizado-off #fechaFinal').val(f_td);
-                var pager = dgAutorizar.datagrid('getPager');
-                pager.pagination({
-                    showPageList: false,
-                    button: [{
-                            iconCls: 'icon-search',
-                            handler: function() {
-                                alert('search');
-                            }
-                        }, {
-                            iconCls: 'icon-add',
-                            handler: function() {
-                                alert('add');
-                            }
-                        }, {
-                            iconCls: 'icon-edit',
-                            handler: function() {
-                                alert('edit');
-                            }
-                        }],
-                    onBeforeRefresh: function() {
-                        alert('before refresh');
-                        return true;
-                    }
-                });
-                
-              function anularComprobantesOff() {
+
+        <script type="text/javascript">
+            var f_1 = $.fn.date.newDateFirstDay();
+            var f_td = $.fn.date.newDate();
+            var dgAutorizar = $("#dg-autorizado-off");
+            dgAutorizar.datagrid({
+                queryParams: {
+                    tipoDoc: $("#tipoDocAutorizado").val(),
+                    fechaIni: f_1,
+                    fechaFinal: f_td,
+                    nroSri: $("#searchAutorizado-off #nroSri").val(),
+                    nroReferencia: $("#searchAutorizado-off #nroReferencia").val(),
+                    codInterlocutor: $("#searchAutorizado-off #codInterlocutor").val()
+                }
+            });
+            $('#searchAutorizado-off #fechaInicial').val(f_1);
+            $('#searchAutorizado-off #fechaFinal').val(f_td);
+            var pager = dgAutorizar.datagrid('getPager');
+            pager.pagination({
+                showPageList: false,
+                button: [{
+                        iconCls: 'icon-search',
+                        handler: function() {
+                            alert('search');
+                        }
+                    }, {
+                        iconCls: 'icon-add',
+                        handler: function() {
+                            alert('add');
+                        }
+                    }, {iconCls: 'icon-edit',
+                        handler: function() {
+                            alert('edit');
+                        }
+                    }],
+                onBeforeRefresh: function() {
+                    alert('before refresh');
+                    return true;
+                }
+            });
+            function anularComprobantesOff() {
                 $.fn.anular_offline.setData($('#dg-autorizado-off').datagrid('getSelections'));
                 $.fn.anular_offline.gridPrincipal = $('#dg-autorizado-off');
                 $.fn.anular_offline.clearGrid = function() {
                     $('#dg-autorizado-off').datagrid('clearSelections');
                 };
-                $.fn.anular_offline.openDialog('#dlg-autorizados-anular-off'); 
-               }
-               
-                $('#searchAutorizado-off #tipoDocAutorizado').combobox({
+                $.fn.anular_offline.openDialog('#dlg-autorizados-anular-off');
+            }
+
+            $('#searchAutorizado-off #tipoDocAutorizado').combobox({
                 onSelect: function() {
                     $("#dg-autorizado-off").datagrid('clearSelections');
                     buscarAutorizadosOff();
-                  }
-               });
-               
-                function buscarAutorizadosOff() {
-                    $("#dg-autorizado-off").datagrid('reload', {
-                        tipoDoc: $("#searchAutorizado-off input[name=tipoDocAutorizado]").val(),
-                        fechaIni: $("#searchAutorizado-off #fechaInicial").datebox('getValue'),
-                        fechaFinal: $("#searchAutorizado-off #fechaFinal").datebox('getValue'),
-                        nroSri: $("#searchAutorizado-off #nroSri").val(),
-                        nroReferencia: $("#searchAutorizado-off #nroReferencia").val(),
-                        codInterlocutor: $("#searchAutorizado-off #codInterlocutor").val()
+                }
+            });
+            function buscarAutorizadosOff() {
+                $("#dg-autorizado-off").datagrid('reload', {
+                    tipoDoc: $("#searchAutorizado-off input[name=tipoDocAutorizado]").val(),
+                    fechaIni: $("#searchAutorizado-off #fechaInicial").datebox('getValue'),
+                    fechaFinal: $("#searchAutorizado-off #fechaFinal").datebox('getValue'),
+                    nroSri: $("#searchAutorizado-off #nroSri").val(),
+                    nroReferencia: $("#searchAutorizado-off #nroReferencia").val(),
+                    codInterlocutor: $("#searchAutorizado-off #codInterlocutor").val()
+                });
+            }
+
+            function generarReporte() {
+                $.fn.loading.open("Reporte", "Generando Reporte en Excel.");
+                var data = $('#dg-autorizado-off').datagrid('getData');
+                var objeto = {
+                    tipoDoc: $("#searchAutorizado-off input[name=tipoDocAutorizado]").val(),
+                    fechaIni: $("#searchAutorizado-off #fechaInicial").datebox('getValue'),
+                    fechaFinal: $("#searchAutorizado-off #fechaFinal").datebox('getValue'),
+                    nroSri: $("#searchAutorizado-off #nroSri").val(),
+                    nroReferencia: $("#searchAutorizado-off #nroReferencia").val(),
+                    codInterlocutor: $("#searchAutorizado-off #codInterlocutor").val()};
+                if (data.rows.length > 0) {
+                    $.ajax({type: 'POST',
+                        url: '${pageContext.request.contextPath}/view/autorizado/offline/comprobante/generar',
+                        dataType: 'json',
+                        data: objeto,
+                        success: function(data) {
+                            if (data.success) {
+                                document.execCommand('SaveAs',true,data.data);
+                                $.fn.loading.close();
+                                $.fn.EXCEL.setData(data.data);
+                                $.fn.EXCEL.show();
+                            } else {
+                                $.fn.loading.close();
+                                $.messager.alert('Reporte', data.message, 'info');
+                            }
+                        },
+                        error: function() {
+                            $.fn.loading.close();
+                            $.messager.alert('Reporte', "No se Genero el Reporte excel.", 'info');
+                        }
                     });
-                } 
+                } else {
+                    $.fn.loading.close();
+                    $.messager.alert('Reporte', 'No existe Datos para crear el reporte.', 'info');
+                }
+
+            }
+
         </script>
     </body>
 </html>
